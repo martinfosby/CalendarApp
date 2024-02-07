@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -32,7 +33,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,21 +49,24 @@ class MainActivity : ComponentActivity() {
         setContent {
             CalendarAppTheme {
                 Column {
-                    var yearInput by remember { mutableStateOf("2024") }
-                    var monthInput by remember { mutableStateOf("1") }
-                    Text("Year:")
+                    var yearInput by remember { mutableStateOf(getString(R.string.year)) }
+                    var monthInput by remember { mutableStateOf(getString(R.string.month)) }
+                    Text(stringResource(id = R.string.year_input))
                     TextField(
                         value = yearInput,
                         onValueChange = {
                             yearInput = it
-                        }
+                        },
+                        modifier = Modifier.fillMaxWidth()
                     )
-                    Text("Month:")
+                    Text(stringResource(id = R.string.month_input))
                     TextField(
                         value = monthInput,
                         onValueChange = {
                             monthInput = it
-                        }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+
                     )
                     val year = yearInput.toIntOrNull() ?: 2024 // Use 2024 as default if input is empty or not a valid number
                     val month = monthInput.toIntOrNull() ?: 2 // Use 2 as default if input is empty or not a valid number
@@ -76,7 +82,7 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Calendar(year: Int, month: MonthInfo, modifier: Modifier = Modifier.fillMaxSize()) {
-    val daysIndex = arrayOf("M", "T", "O", "T", "F", "L", "S")
+    val daysIndex = LocalContext.current.resources.getStringArray(R.array.day_abbreviations)
     val weekOfMonth = getWeeksInMonth(year, month.index)
     val daysOfMonth = getDaysOfMonth(year, month.index)
     var daysSinceFirstJan by remember {
@@ -168,19 +174,26 @@ fun Calendar(year: Int, month: MonthInfo, modifier: Modifier = Modifier.fillMaxS
                                     .padding(40.dp)
                                     .background(MaterialTheme.colorScheme.background)
                             ) {
+                                val workingDaysText = stringResource(R.string.working_days_text, workingDays)
+                                val daysSinceFirstJanText = stringResource(
+                                    if (daysSinceFirstJan == 0) R.string.click_to_find_days_text
+                                    else R.string.days_since_first_jan_text, currentDay, daysSinceFirstJan
+                                )
+
                                 Text(
-                                    text = "Denne måneden har $workingDays arbeidsdager.",
+                                    text = workingDaysText,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 20.sp,
                                     modifier = Modifier.padding(8.dp)
                                 )
+
                                 Text(
-                                    text = if (daysSinceFirstJan == 0) "Klikk på en dag for å finne antall dager siden 1. januar."
-                                    else "Dager siden 1 januar for dag $currentDay er: $daysSinceFirstJan dager.",
+                                    text = daysSinceFirstJanText,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 20.sp,
                                     modifier = Modifier.padding(8.dp)
                                 )
+
                             }
                         }
                     }

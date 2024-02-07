@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">Calendar app</string>
+    <string name="year_input">Year:</string>
+    <string name="month_input">Month:</string>
+    <string name="year">2024</string>
+    <string name="month">2</string>
+    <string-array name="day_abbreviations">
+        <item>M</item>
+        <item>T</item>
+        <item>O</item>
+        <item>T</item>
+        <item>F</item>
+        <item>L</item>
+        <item>S</item>
+    </string-array>
+    <string name="working_days_text">Denne måneden har %d arbeidsdager.</string>
+    <string name="click_to_find_days_text">Klikk på en dag for å finne antall dager siden 1. januar.</string>
+    <string name="days_since_first_jan_text">Dager siden 1. januar for dag %1$d er: %2$d dager.</string>
+
 </resources>
