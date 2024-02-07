@@ -47,14 +47,15 @@ class MainActivity : ComponentActivity() {
             CalendarAppTheme {
                 Column {
                     var yearInput by remember { mutableStateOf("2024") }
-                    var monthInput by remember { mutableStateOf("2") }
-
+                    var monthInput by remember { mutableStateOf("1") }
+                    Text("Year:")
                     TextField(
                         value = yearInput,
                         onValueChange = {
                             yearInput = it
                         }
                     )
+                    Text("Month:")
                     TextField(
                         value = monthInput,
                         onValueChange = {
@@ -125,9 +126,6 @@ fun Calendar(year: Int, month: MonthInfo, modifier: Modifier = Modifier.fillMaxS
                     contentScale = ContentScale.FillBounds, // Adjust content scale if needed
                     alpha = 0.5F
                 )
-
-
-
                 Column {
                     Row {
                         Box(modifier = Modifier.padding(20.dp))

@@ -1,6 +1,8 @@
 package com.example.calendarapp.utils
 
 import java.util.Calendar
+import java.util.GregorianCalendar
+import java.util.TimeZone
 
 
 data class MonthInfo(val index: Int){
@@ -27,14 +29,15 @@ data class MonthInfo(val index: Int){
 
 
 fun getDaysInMonth(year: Int, month: Int): Int {
-    val calendar = Calendar.getInstance()
+    val calendar = GregorianCalendar(TimeZone.getDefault())
+    calendar.firstDayOfWeek = Calendar.MONDAY // Set Monday as the first day of the week
     calendar.set(Calendar.YEAR, year)
     calendar.set(Calendar.MONTH, month - 1) // Calendar months are zero-based
     return calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
 }
 
 fun getWeeksInMonth(year: Int, month: Int): List<Int> {
-    val calendar = Calendar.getInstance()
+    val calendar = GregorianCalendar(TimeZone.getDefault())
     calendar.firstDayOfWeek = Calendar.MONDAY // Set Monday as the first day of the week
     calendar.set(Calendar.YEAR, year)
     calendar.set(Calendar.MONTH, month - 1) // Calendar months are zero-based
@@ -45,26 +48,33 @@ fun getWeeksInMonth(year: Int, month: Int): List<Int> {
 
     val lastDayOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
 
-    while (calendar.get(Calendar.DAY_OF_MONTH) <= lastDayOfMonth) {
+    while (calendar.get(Calendar.DAY_OF_MONTH) < lastDayOfMonth) {
         val weekNumber = calendar.get(Calendar.WEEK_OF_YEAR)
         if (weekNumber !in weekNumbers) {
             weekNumbers.add(weekNumber)
         }
-        calendar.set(Calendar.DAY_OF_MONTH, ++startDay)
+        startDay++
+        calendar.set(Calendar.DAY_OF_MONTH, startDay)
     }
 
     return weekNumbers
 }
 
 fun getDayOfWeek(year: Int, month: Int, dayOfMonth: Int): Int {
-    val calendar = Calendar.getInstance()
+    val calendar = GregorianCalendar(TimeZone.getDefault())
     calendar.firstDayOfWeek = Calendar.MONDAY // Set Monday as the first day of the week
     calendar.set(Calendar.YEAR, year)
     calendar.set(Calendar.MONTH, month - 1) // Calendar months are zero-based
     calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-    return calendar.get(Calendar.DAY_OF_WEEK) - 1
+    var dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+
+    // Adjust the day of the week to your desired representation
+    dayOfWeek = (dayOfWeek + 5) % 7 + 1
+
+    return dayOfWeek
 }
+
 fun getDaysOfMonth(year: Int, month: Int): List<Any> {
     val dayOfWeek = getDayOfWeek(year, month, 1)
     val daysOfMonth = getDaysInMonth(year, month)
@@ -88,7 +98,7 @@ fun getDaysOfMonth(year: Int, month: Int): List<Any> {
 
 fun numberOfDaysSinceFirstJan(year: Int, month: Int, dayOfMonth: Any): Int {
     if (dayOfMonth != " ") {
-        val calendar = Calendar.getInstance()
+        val calendar = GregorianCalendar(TimeZone.getDefault())
         calendar.firstDayOfWeek = Calendar.MONDAY // Set Monday as the first day of the week
         calendar.set(Calendar.YEAR, year)
         calendar.set(Calendar.MONTH, month - 1) // Calendar months are zero-based
@@ -100,7 +110,7 @@ fun numberOfDaysSinceFirstJan(year: Int, month: Int, dayOfMonth: Any): Int {
 }
 
 fun numberOfWorkDays(year: Int, month: Int): Int {
-    val calendar = Calendar.getInstance()
+    val calendar = GregorianCalendar(TimeZone.getDefault())
     calendar.firstDayOfWeek = Calendar.MONDAY // Set Monday as the first day of the week
     calendar.set(Calendar.YEAR, year)
     calendar.set(Calendar.MONTH, month - 1) // Calendar months are zero-based
